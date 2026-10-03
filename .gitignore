@@ -144,3 +144,52 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# ── 보안: 비밀키·인증서·자격증명 ──
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+id_rsa*
+id_ed25519*
+*.ppk
+secrets/
+secret.*
+secrets.*
+credentials*.json
+service-account*.json
+*.secret
+.npmrc
+.pypirc
+.netrc
+.aws/
+.ssh/
+.gcloud/
+.htpasswd
+terraform.tfstate*
+*.tfvars
+
+# ── 보안: 로컬 덤프·백업 (민감 데이터가 섞일 수 있음) ──
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.dump
+*.bak
+*.orig
+
+# ── Claude Code 개인 설정·세션 인계 문서 ──
+.claude/settings.local.json
+.claude/*.local.*
+.handoff.md
+
+# ── IDE / OS 파일 ──
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
