@@ -1917,16 +1917,267 @@ const overlays = [
 })();` }
 ];
 
+// ===== 조합 패턴 (1개) — 기본 컴포넌트(Button·Input·Checkbox·Form·Tab Bar)를 조합한 화면 단위 예제 =====
+const patterns = [
+  { id: 'auth', num: 41, name: 'Social Login + Sign Up', nameKo: '소셜 로그인 · 회원가입', cat: 'pattern',
+    desc: '소셜 계정 버튼과 이메일 폼을 한 카드에 묶은 인증 화면. 로그인/회원가입을 탭으로 전환하고, 필드별 인라인 검증·비밀번호 강도·약관 전체 동의를 제공한다.',
+    usecase: '서비스 첫 진입 · 회원가입 · 로그인 게이트',
+    feature: '소셜 인증 진입점 + 이메일 폼 + 인라인 검증 + 약관 동의',
+    html: `<div class="auth" id="auth-demo">
+  <div class="auth-tabs" role="tablist">
+    <button type="button" class="auth-tab active" role="tab" aria-selected="true" data-mode="login">로그인</button>
+    <button type="button" class="auth-tab" role="tab" aria-selected="false" data-mode="signup">회원가입</button>
+  </div>
+
+  <div class="auth-social">
+    <button type="button" class="auth-social-btn" data-provider="google">Google로 계속하기</button>
+    <button type="button" class="auth-social-btn" data-provider="kakao">카카오로 계속하기</button>
+    <button type="button" class="auth-social-btn" data-provider="naver">네이버로 계속하기</button>
+    <button type="button" class="auth-social-btn" data-provider="apple">Apple로 계속하기</button>
+  </div>
+
+  <div class="auth-divider"><span>또는 이메일로</span></div>
+
+  <form class="auth-pane" data-pane="login" novalidate>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-l-email">이메일</label>
+      <input class="auth-input" id="auth-l-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-l-pw">비밀번호</label>
+      <input class="auth-input" id="auth-l-pw" name="password" type="password" autocomplete="current-password" placeholder="비밀번호 입력">
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <label class="auth-check"><input type="checkbox" name="remember"> 로그인 상태 유지</label>
+    <button type="submit" class="auth-submit">로그인</button>
+    <a href="#" class="auth-link">비밀번호를 잊으셨나요?</a>
+  </form>
+
+  <form class="auth-pane" data-pane="signup" novalidate hidden>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-s-name">이름</label>
+      <input class="auth-input" id="auth-s-name" name="name" type="text" autocomplete="name" placeholder="홍길동">
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-s-email">이메일</label>
+      <input class="auth-input" id="auth-s-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-s-pw">비밀번호</label>
+      <input class="auth-input" id="auth-s-pw" name="password" type="password" autocomplete="new-password" placeholder="8자 이상, 영문·숫자 포함">
+      <div class="auth-hint" data-role="strength">비밀번호 강도: -</div>
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" for="auth-s-pw2">비밀번호 확인</label>
+      <input class="auth-input" id="auth-s-pw2" name="password2" type="password" autocomplete="new-password" placeholder="비밀번호 다시 입력">
+      <div class="auth-error" role="alert"></div>
+    </div>
+    <div class="auth-terms">
+      <label class="auth-check auth-check-all"><input type="checkbox" data-role="all"> 약관 전체 동의</label>
+      <label class="auth-check"><input type="checkbox" name="terms" data-role="item" data-required> (필수) 이용약관 동의</label>
+      <label class="auth-check"><input type="checkbox" name="privacy" data-role="item" data-required> (필수) 개인정보 수집·이용 동의</label>
+      <label class="auth-check"><input type="checkbox" name="marketing" data-role="item"> (선택) 마케팅 정보 수신 동의</label>
+      <div class="auth-error" role="alert" data-role="terms-error"></div>
+    </div>
+    <button type="submit" class="auth-submit">가입하기</button>
+  </form>
+
+  <div class="auth-status" role="status" aria-live="polite"></div>
+</div>`,
+    css: `.auth {
+  width: 100%; max-width: 360px; background: #fff;
+  border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  font-family: inherit; color: #0f172a; text-align: left;
+}
+.auth *, .auth *::before, .auth *::after { box-sizing: border-box; }
+
+/* 로그인 / 회원가입 전환 */
+.auth-tabs { display: flex; border-bottom: 1px solid #e5e7eb; }
+.auth-tab {
+  flex: 1; background: none; border: none; padding: 10px 0; margin-bottom: -1px;
+  font: inherit; font-size: 14px; font-weight: 500; color: #64748b; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: color .15s ease, border-color .15s ease;
+}
+.auth-tab:hover { color: #0f172a; }
+.auth-tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 600; }
+
+/* 소셜 로그인 */
+.auth-social { display: flex; flex-direction: column; gap: 8px; }
+.auth-social-btn {
+  width: 100%; padding: 10px 14px; background: #fff; color: #0f172a;
+  border: 1px solid #cbd5e1; border-radius: 6px;
+  font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: background-color .15s ease;
+}
+.auth-social-btn:hover { background: #f8fafc; }
+
+/* 구분선 */
+.auth-divider { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #94a3b8; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+
+/* 폼 */
+.auth-pane { display: flex; flex-direction: column; gap: 12px; }
+.auth-pane[hidden] { display: none; }
+.auth-field { display: flex; flex-direction: column; gap: 4px; }
+.auth-label { font-size: 12px; font-weight: 600; }
+.auth-input {
+  width: 100%; padding: 9px 12px; background: #fff; color: #0f172a;
+  border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; font-size: 13px;
+}
+.auth-input::placeholder { color: #94a3b8; }
+.auth-input:focus { outline: none; border-color: #2563eb; }
+.auth-input.error { border-color: #dc2626; }
+.auth-hint { font-size: 11px; color: #64748b; }
+.auth-error { font-size: 11px; color: #dc2626; min-height: 14px; }
+
+/* 체크박스 · 약관 */
+.auth-check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.auth-check input { width: 16px; height: 16px; margin: 0; accent-color: #2563eb; cursor: pointer; }
+.auth-terms {
+  display: flex; flex-direction: column; gap: 8px;
+  border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px;
+}
+.auth-check-all { font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; }
+
+/* 제출 · 보조 링크 */
+.auth-submit {
+  width: 100%; padding: 10px 14px; background: #2563eb; color: #fff;
+  border: none; border-radius: 6px; font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background-color .15s ease;
+}
+.auth-submit:hover { background: #1d4ed8; }
+.auth-link { align-self: center; font-size: 12px; color: #64748b; }
+.auth-link:hover { color: #2563eb; }
+
+/* 결과 메시지 */
+.auth-status { font-size: 12px; color: #64748b; min-height: 16px; text-align: center; }
+.auth-status.ok { color: #16a34a; }
+.auth-status.err { color: #dc2626; }
+
+.auth button:focus-visible, .auth a:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }`,
+    js: `(function () {
+  const root = document.getElementById('auth-demo');
+  if (!root) return;
+
+  const tabs = root.querySelectorAll('.auth-tab');
+  const panes = root.querySelectorAll('.auth-pane');
+  const status = root.querySelector('.auth-status');
+  const loginForm = root.querySelector('[data-pane="login"]');
+  const signupForm = root.querySelector('[data-pane="signup"]');
+
+  function setStatus(msg, kind) {
+    status.textContent = msg || '';
+    status.className = 'auth-status' + (kind ? ' ' + kind : '');
+  }
+
+  // 필드 에러 표시/해제 — 메시지가 빈 문자열이면 해제
+  function setError(input, msg) {
+    input.classList.toggle('error', !!msg);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    input.closest('.auth-field').querySelector('.auth-error').textContent = msg || '';
+    return !msg;
+  }
+
+  function show(mode) {
+    tabs.forEach(t => {
+      const on = t.dataset.mode === mode;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', String(on));
+    });
+    panes.forEach(p => { p.hidden = p.dataset.pane !== mode; });
+    setStatus('');
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.mode)));
+
+  // ── 소셜 로그인 ──
+  // 실제 서비스에서는 서버의 OAuth 시작 URL로 이동시킨다. 예: location.href = '/auth/' + provider;
+  const PROVIDERS = { google: 'Google', kakao: '카카오', naver: '네이버', apple: 'Apple' };
+  root.querySelectorAll('.auth-social-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const provider = btn.dataset.provider;
+      setStatus(PROVIDERS[provider] + ' 인증 페이지로 이동합니다 (데모)', 'ok');
+    });
+  });
+
+  // ── 검증 규칙 ──
+  const EMAIL_RE = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  const checkEmail = el => setError(el, EMAIL_RE.test(el.value.trim()) ? '' : '올바른 이메일을 입력하세요');
+  const checkName = el => setError(el, el.value.trim().length >= 2 ? '' : '이름을 2자 이상 입력하세요');
+  const checkPassword = el => setError(el, el.value.length >= 8 && /[A-Za-z]/.test(el.value) && /\\d/.test(el.value)
+    ? '' : '8자 이상, 영문과 숫자를 포함해야 합니다');
+  const checkPassword2 = (el, pw) => setError(el, el.value && el.value === pw.value ? '' : '비밀번호가 일치하지 않습니다');
+
+  // ── 로그인 ──
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const okEmail = checkEmail(loginForm.email);
+    const okPw = setError(loginForm.password, loginForm.password.value ? '' : '비밀번호를 입력하세요');
+    if (okEmail && okPw) setStatus('로그인 요청이 전송되었습니다 (데모)', 'ok');
+    else setStatus('');
+  });
+
+  // ── 회원가입 ──
+  const f = signupForm;
+  const strengthEl = f.querySelector('[data-role="strength"]');
+  const termsError = f.querySelector('[data-role="terms-error"]');
+  const allBox = f.querySelector('[data-role="all"]');
+  const itemBoxes = Array.from(f.querySelectorAll('[data-role="item"]'));
+
+  // 비밀번호 강도: 길이·영문·숫자·특수문자 충족 개수
+  f.password.addEventListener('input', () => {
+    const v = f.password.value;
+    if (!v) { strengthEl.textContent = '비밀번호 강도: -'; return; }
+    const score = [v.length >= 8, /[A-Za-z]/.test(v) && /\\d/.test(v), /[^A-Za-z0-9]/.test(v), v.length >= 12]
+      .filter(Boolean).length;
+    strengthEl.textContent = '비밀번호 강도: ' + (score <= 1 ? '약함' : score <= 2 ? '보통' : '강함');
+  });
+
+  // 입력을 벗어날 때 즉시 검증(blur), 에러가 있는 동안은 입력할 때마다 재검증
+  [[f.name, checkName], [f.email, checkEmail], [f.password, checkPassword], [f.password2, el => checkPassword2(el, f.password)]]
+    .forEach(([el, check]) => {
+      el.addEventListener('blur', () => { if (el.value) check(el); });
+      el.addEventListener('input', () => { if (el.classList.contains('error')) check(el); });
+    });
+
+  // 약관 전체 동의 ↔ 개별 동의 동기화
+  allBox.addEventListener('change', () => {
+    itemBoxes.forEach(b => { b.checked = allBox.checked; });
+    termsError.textContent = '';
+  });
+  itemBoxes.forEach(b => b.addEventListener('change', () => {
+    allBox.checked = itemBoxes.every(x => x.checked);
+    termsError.textContent = '';
+  }));
+
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    const results = [
+      checkName(f.name), checkEmail(f.email), checkPassword(f.password), checkPassword2(f.password2, f.password)
+    ];
+    const termsOk = itemBoxes.filter(b => b.hasAttribute('data-required')).every(b => b.checked);
+    termsError.textContent = termsOk ? '' : '필수 약관에 동의해야 가입할 수 있습니다';
+    if (results.every(Boolean) && termsOk) setStatus('가입 요청이 전송되었습니다 (데모)', 'ok');
+    else setStatus('');
+  });
+})();` }
+];
+
 // ===== 프레임워크 =====
-const ALL = components.concat(overlays);
+const ALL = components.concat(overlays, patterns);
 const GROUPS = [
+  { key: 'pattern',   label: '조합 패턴' },
   { key: 'overlay',   label: '오버레이 · 알림' },
   { key: 'input',     label: 'Input Controls' },
   { key: 'nav',       label: 'Navigation' },
   { key: 'info',      label: 'Information' },
   { key: 'container', label: 'Container' }
 ];
-const CAT_BADGE = { input: 'Input', nav: 'Navigation', info: 'Information', container: 'Container', overlay: 'Overlay' };
+const CAT_BADGE = { input: 'Input', nav: 'Navigation', info: 'Information', container: 'Container', overlay: 'Overlay', pattern: 'Pattern' };
 
 // ── 간이 구문 하이라이터 ──
 function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
